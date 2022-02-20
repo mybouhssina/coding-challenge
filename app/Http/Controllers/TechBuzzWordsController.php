@@ -3,19 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\TechBuzzWords;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class TechBuzzWordsController extends Controller
 {
 
-
     /**
-     * Display a listing of the resource.
+     * returns a name based on the query string.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function getName(Request $request)
+    public function getName(Request $request): JsonResponse
     {
         $keyword = $request->get('x');
         if(!trim($keyword)) {
@@ -23,33 +22,41 @@ class TechBuzzWordsController extends Controller
         }
         $techs = explode(',', $keyword);
         $techs = array_map(fn($tech) => trim($tech) ,$techs);
-        $res = TechBuzzWords::query()
+        $models = TechBuzzWords::query()
             ->whereIn('key', $techs)->get()->keyBy('key');
-        if($res->count() < count($techs)) {
-            $missingWords = [];
+//        some of the keywords don't exist
+        if($models->count() < count($techs)) {
+            $inexistingWords = [];
             foreach($techs as $techBuzzWord) {
-                if(!isset($res[$techBuzzWord])) {
-                    $missingWords[] = $techBuzzWord;
+                if(!isset($models[$techBuzzWord])) {
+                    $inexistingWords[] = $techBuzzWord;
                 }
             }
             return response()->json(['error' => [
-                'code' => 'missing_words',
-                'missing_words' => $missingWords
+                'code' => 'inexisting_words',
+                'inexisting_words' => $inexistingWords
             ]])->setStatusCode(422);
         }
         else {
             $finalResult = [];
             foreach($techs as $tech) {
-                $finalResult[] = $res[$tech]->value;
+                $finalResult[] = $models[$tech]->value;
             }
             return response()->json([
-                // TODO: gérer le cas où un ou plusieurs nom de tech n'existe pas
                 'name' => implode(' ', $finalResult)
             ]);
         }
     }
 
-    public function searchTech(Request $request) {
+    /**
+     * Returns a list of keys matching fully or partially the querystring key
+     *
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function searchTech(Request $request): JsonResponse
+    {
         $tech = $request->get('tech');
         return response()->json(\App\Models\TechBuzzWords::query()->where('key', 'like', "$tech%")->pluck('key'));
     }
