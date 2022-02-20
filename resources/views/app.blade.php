@@ -12,5 +12,6 @@
 <body>
 <div id="app"></div>
 </body>
+@routes
 <script src="{{ asset('js/app.js') }}"></script>
 </html>
