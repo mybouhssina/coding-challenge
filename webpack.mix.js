@@ -16,3 +16,14 @@ mix.js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
 
     ]);
+
+mix.webpackConfig({
+    module: {
+        rules: [
+            {
+                test: /\.mjs$/i,
+                resolve: { byDependency: { esm: { fullySpecified: false } } }
+            }
+        ]
+    },
+})
