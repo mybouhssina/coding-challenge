@@ -13,6 +13,8 @@
                     placeholder="Nom d'une technologie"
                     :remote-method="remoteMethod"
                     :multiple-limit="maxWords"
+                    no-match-text="Aucun résultat"
+                    no-data-text="Aucun résultat"
                     :loading="loading"
                 >
                     <el-option
