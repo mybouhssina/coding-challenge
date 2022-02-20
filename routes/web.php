@@ -15,7 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::controller(TechBuzzWordsController::class)->group(function() {
-    Route::get('/ninjify', 'getName');
+    Route::get('/ninjify', 'getName')->name('getName');
     Route::get('/techs', 'searchTech')->name('techs.search');
 });
+
+Route::get('/', fn() => view('app'));
 
