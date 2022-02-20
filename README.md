@@ -1,4 +1,5 @@
 Hosted at: https://secure-lake-79426.herokuapp.com
+Technologies: Laravel 9/ Vue 3
 ## Endpoints:
 ### / : Search page  
 ### /ninjify: API:  
