@@ -18,6 +18,9 @@ class TechBuzzWordsController extends Controller
     public function getName(Request $request)
     {
         $keyword = $request->get('x');
+        if(!trim($keyword)) {
+            return response()->json(['error' => "missing query parameter 'x'"])->setStatusCode(400);;
+        }
         $techs = explode(',', $keyword);
         $techs = array_map(fn($tech) => trim($tech) ,$techs);
         $res = TechBuzzWords::query()
